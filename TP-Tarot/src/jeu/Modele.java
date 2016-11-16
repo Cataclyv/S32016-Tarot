@@ -4,20 +4,19 @@ import java.util.Observable;
 import java.util.ArrayList;
 
 /**
- * Partie "modèle" de l'architecture MVC ; contient les données de l'application.
+ * Partie "modele" de l'architecture MVC ; contient les donnees de l'application.
  * @author jdespret
  * 
  */
 public class Modele extends Observable{
 	/**
-	 * Collection contenant l'intégralité des cartes utilisables dans le jeu.
+	 * Collection contenant l'integralite des cartes utilisables dans le jeu.
 	 */
 	private ArrayList<Carte> cartes;
-	
 	/**
-	 * Collecion contenant les cartes dans la main du joueur.
+	 * Tableau contenant les 4 mains, chaque main contenant un certain nombre de cartes.
 	 */
-	private ArrayList<Carte> mainJoueur;
+	private Carte[][] mains;
 	
 	/**
 	 * Collection contenant les cartes du Chien.
@@ -29,8 +28,9 @@ public class Modele extends Observable{
 	 */
 	public Modele() {
 		cartes = new ArrayList<Carte>();
-		mainJoueur = new ArrayList<Carte>();
 		chien = new ArrayList<Carte>();
+		
+		mains = new Carte[4][24];
 		
 		construireJeu();
 	}
@@ -39,6 +39,7 @@ public class Modele extends Observable{
 	 * Initialise les 78 cartes du jeu de Tarot dans la collection de cartes.
 	 */
 	private void construireJeu() {
+		cartes.clear();
 		construireCouleur(CouleurCarte.pique);
 		construireCouleur(CouleurCarte.coeur);
 		construireCouleur(CouleurCarte.carreau);

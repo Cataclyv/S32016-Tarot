@@ -6,5 +6,13 @@ package jeu;
  *
  */
 public class Controleur {
+	/**
+	 * Unique modele de l'application, dans le controleur.
+	 */
+	private Modele modele;
+	
+	public Controleur(Modele modele) {
+		this.modele = modele;
+	}
 
 }
