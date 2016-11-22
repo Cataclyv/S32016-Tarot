@@ -3,6 +3,8 @@ package jeu;
 import java.util.Observable;
 import java.util.ArrayList;
 
+import java.util.Random;
+
 /**
  * Partie "modele" de l'architecture MVC ; contient les donnees de l'application.
  * @author jdespret
@@ -23,13 +25,13 @@ public class Modele extends Observable{
 	 */
 	private ArrayList<Carte> chien;
 	/**
-	 * Nombre de cartes maximum par main, doit etre atteint a la fin de toutes les distributions.
-	 */
-	private final int NB_CARTES_PAR_MAIN = 18;
-	/**
 	 * Nombre de cartes a tirer a chaque distribution.
 	 */
 	private final int NB_CARTES_A_TIRER = 3;
+	/**
+	 * Nombre de cartes que le Chien doit accueillir.
+	 */
+	private final int TAILLE_CHIEN = 6;
 
 	/**
 	 * Constructeur par défaut de Modele.
@@ -68,6 +70,8 @@ public class Modele extends Observable{
 		construireCouleur(CouleurCarte.carreau);
 		construireCouleur(CouleurCarte.trefle);
 		construireAtouts();
+		construireExcuse();
+		melangerCartes();
 	}
 	
 	/**
@@ -85,9 +89,31 @@ public class Modele extends Observable{
 	 */
 	private void construireAtouts() {
 		CouleurCarte couleur = CouleurCarte.atout;
-		for(int valeur = 1 ; valeur < 21 ; valeur++) {
+		for(int valeur = 1 ; valeur <= 21 ; valeur++) {
 			cartes.add(new Carte(couleur, valeur, couleur.toString()+valeur));
 		}
+	}
+	
+	/**
+	 * Ajoute l'Excuse au jeu de cartes total.
+	 */
+	private void construireExcuse() {
+		cartes.add(new Carte(CouleurCarte.excuse, 0, "excuse"));
+	}
+	
+	/**
+	 * Melange aleatoirement le jeu de cartes total.
+	 */
+	private void melangerCartes() {
+		ArrayList<Carte> paquetMelange = new ArrayList<Carte>();
+		int index = 0;
+		Random aleatoire = new Random();
+		while(!cartes.isEmpty()) {
+			index = aleatoire.nextInt(cartes.size());
+			paquetMelange.add(cartes.get(index));
+			cartes.remove(index);
+		}
+		cartes = paquetMelange;
 	}
 	
 	/**
@@ -96,12 +122,16 @@ public class Modele extends Observable{
 	 * @return TRUE si les cartes ont bien ete distribuees, FAUX sinon (cas ou tout a ete distribue)
 	 */
 	public boolean tirerCartes(int tour) {
-		if(mains.get(tour).size() < NB_CARTES_PAR_MAIN) {
+		if(cartes.size() > 0) {
 			int i;
 			for(i=0 ; i<NB_CARTES_A_TIRER ; ++i) {
 				mains.get(tour).add(cartes.get(i));
 			}
 			for(i=0 ; i<NB_CARTES_A_TIRER ; ++i) {
+				cartes.remove(0);
+			}
+			if(chien.size() < TAILLE_CHIEN) {
+				chien.add(cartes.get(0));
 				cartes.remove(0);
 			}
 			setChanged();
