@@ -20,11 +20,22 @@ public class Controleur {
 		tour = 0;
 	}
 	
+	/**
+	 * Distribue les cartes pour le joueur courant (manipule le modele).
+	 * @return TRUE si la distribution a ete possible, FALSE si la distribution est terminee.
+	 */
 	public boolean distribuerCartes() {
-		boolean resultat = modele.tirerCartes(tour);
+		boolean resultat = false;
+		
+		try {
+			resultat = modele.tirerCartes(tour);
+		} catch (TarotException e) {
+			e.message();
+		}
 		++tour;
 		if(tour >= 3)
 			tour = 0;
+		
 		return resultat;
 	}
 

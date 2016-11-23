@@ -19,7 +19,7 @@ public class Modele extends Observable{
 	 * Liste comprenant 4 sous-listes correspondant aux 4 mains
 	 */
 	private ArrayList<ArrayList<Carte> > mains;
-	
+
 	/**
 	 * Collection contenant les cartes du Chien.
 	 */
@@ -38,10 +38,17 @@ public class Modele extends Observable{
 	 */
 	public Modele() {
 		construireTas();
-		construireMains();
+
+		try {
+			construireMains();
+		}
+		catch(TarotException e) {
+			e.message();
+		}
+
 		construireJeu();
 	}
-	
+
 	/**
 	 * Construit la liste de cartes totale et le chien.
 	 */
@@ -49,58 +56,61 @@ public class Modele extends Observable{
 		cartes = new ArrayList<Carte>();
 		chien = new ArrayList<Carte>();
 	}
-	
+
 	/**
 	 * Construit les 4 mains des 4 joueurs.
+	 * @throws TarotException
 	 */
-	private void construireMains() {
+	private void construireMains() throws TarotException {
 		mains = new ArrayList<ArrayList<Carte> >(4);
-		
+
 		for(int i=0 ; i<4 ; ++i)
 			mains.add(new ArrayList<Carte>());
+
+		if(mains.size() != 4)
+			throw new TarotException("Il y a " + mains.size() + " mains au lieu de 4");
 	}
-	
+
 	/**
 	 * Initialise les 78 cartes du jeu de Tarot dans la collection de cartes.
 	 */
 	private void construireJeu() {
 		cartes.clear();
-		construireCouleur(CouleurCarte.pique);
-		construireCouleur(CouleurCarte.coeur);
-		construireCouleur(CouleurCarte.carreau);
-		construireCouleur(CouleurCarte.trefle);
-		construireAtouts();
-		construireExcuse();
+
+		try {
+			construireCouleur(CouleurCarte.pique, 14);
+			construireCouleur(CouleurCarte.coeur, 14);
+			construireCouleur(CouleurCarte.carreau, 14);
+			construireCouleur(CouleurCarte.trefle, 14);
+			construireCouleur(CouleurCarte.atout, 21);
+			construireCouleur(CouleurCarte.excuse, 1);
+		}
+		catch(TarotException e) {
+			e.message();
+		}
+		
 		melangerCartes();
 	}
-	
+
 	/**
-	 * Insere 14 cartes de la couleur spécifiée dans le jeu de cartes total.
+	 * Insere autant de cartes de la couleur spécifiée que precise dans le jeu de cartes total.
 	 * @param couleur
+	 * @param nbCartes
+	 * @throws TarotException
 	 */
-	private void construireCouleur(CouleurCarte couleur) {
-		for(int valeur=1 ; valeur<=14 ; valeur++) {
+	private void construireCouleur(CouleurCarte couleur, int nbCartes) throws TarotException {
+		int nbCartesAjoutees = 0;
+		int tailleInitiale = cartes.size();
+
+		for(int valeur=1 ; valeur<=nbCartes ; valeur++) {
 			cartes.add(new Carte(couleur, valeur, couleur.toString()+valeur));
+			nbCartesAjoutees++;
 		}
+
+		if(cartes.size() != tailleInitiale + nbCartesAjoutees)
+			throw new TarotException("Il y a " + nbCartesAjoutees + " cartes \"" + couleur.toString() + "\" ajoutees et non " + nbCartes);
 	}
-	
-	/**
-	 * Insere les 21 atouts dans le jeu de cartes total.
-	 */
-	private void construireAtouts() {
-		CouleurCarte couleur = CouleurCarte.atout;
-		for(int valeur = 1 ; valeur <= 21 ; valeur++) {
-			cartes.add(new Carte(couleur, valeur, couleur.toString()+valeur));
-		}
-	}
-	
-	/**
-	 * Ajoute l'Excuse au jeu de cartes total.
-	 */
-	private void construireExcuse() {
-		cartes.add(new Carte(CouleurCarte.excuse, 0, "excuse"));
-	}
-	
+
 	/**
 	 * Melange aleatoirement le jeu de cartes total.
 	 */
@@ -115,13 +125,17 @@ public class Modele extends Observable{
 		}
 		cartes = paquetMelange;
 	}
-	
+
 	/**
-	 * Retire des cartes du jeu et les places dans la main du joueur courant
+	 * Retire des cartes du jeu et les places dans la main du joueur courant.
 	 * @param tour -> a qui donner les cartes
 	 * @return TRUE si les cartes ont bien ete distribuees, FAUX sinon (cas ou tout a ete distribue)
+	 * @throws TarotException
 	 */
-	public boolean tirerCartes(int tour) {
+	public boolean tirerCartes(int tour) throws TarotException {
+		int tailleInitialeMain = mains.get(tour).size();
+		int tailleInitialeCartes = cartes.size();
+		
 		if(cartes.size() > 0) {
 			int i;
 			for(i=0 ; i<NB_CARTES_A_TIRER ; ++i) {
@@ -130,10 +144,21 @@ public class Modele extends Observable{
 			for(i=0 ; i<NB_CARTES_A_TIRER ; ++i) {
 				cartes.remove(0);
 			}
+			
+			if(mains.get(tour).size() != tailleInitialeMain + NB_CARTES_A_TIRER) {
+				int nbCartesPrevu = tailleInitialeMain + NB_CARTES_A_TIRER;
+				throw new TarotException("Le joueur n°" + tour + " a une main de " + mains.get(tour).size() + " cartes et non " + nbCartesPrevu);
+			}
+			if(cartes.size() != tailleInitialeCartes - NB_CARTES_A_TIRER) {
+				int nbCartesPrevu = cartes.size() - NB_CARTES_A_TIRER;
+				throw new TarotException("Le joueur n°" + tour + " a une main de " + cartes.size() + " cartes et non " + nbCartesPrevu);
+			}
+			
 			if(chien.size() < TAILLE_CHIEN) {
 				chien.add(cartes.get(0));
 				cartes.remove(0);
 			}
+			
 			setChanged();
 			notifyObservers();
 			return true;
