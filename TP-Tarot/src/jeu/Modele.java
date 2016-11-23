@@ -165,4 +165,12 @@ public class Modele extends Observable{
 		}
 		return false;
 	}
+	
+	/**
+	 * Permet a la Vue de recuperer les cartes dans la main du joueur 1.
+	 * @return Une collection de cartes correspondant a la main du joueur 1.
+	 */
+	public ArrayList<Carte> getMainJoueur1() {
+		return mains.get(0);
+	}
 }

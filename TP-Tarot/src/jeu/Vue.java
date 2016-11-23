@@ -9,7 +9,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -24,7 +24,9 @@ public class Vue implements Observer{
 	 * Taille de la fenetre graphique a afficher.
 	 */
 	private final Dimension TAILLE_FENETRE = new Dimension(800,600);
-	
+	/**
+	 * Position de la fenetre graphique sur le bureau.
+	 */
 	private final Point POSITION_FENETRE = new Point(600,200);
 	/**
 	 * Dimension des boutons de la fenetre.
@@ -38,7 +40,10 @@ public class Vue implements Observer{
 	 * L'unique Controleur de l'architecture.
 	 */
 	private Controleur controleur;
-	
+	/**
+	 * Ensemble de boutons correspondant aux cartes affichees.
+	 */
+	private ArrayList<CarteGraphique> cartesAffichees;
 	/**
 	 * Fenetre contenant tous les elements graphiques de la Vue.
 	 */
@@ -58,6 +63,7 @@ public class Vue implements Observer{
 	
 	public Vue() {
 		modele = new Modele();
+		modele.addObserver(this);
 		controleur = new Controleur(modele);
 		
 		construireFenetre();
@@ -67,6 +73,9 @@ public class Vue implements Observer{
 		construireLabels();
 	}
 	
+	/**
+	 * Construit la fenetre graphique.
+	 */
 	private void construireFenetre() {
 		fenetre = new JFrame();
 		fenetre.setSize(TAILLE_FENETRE);
@@ -76,6 +85,9 @@ public class Vue implements Observer{
 		fenetre.setVisible(true);
 	}
 	
+	/**
+	 * Construit le panneau Swing qui contiendra l'ensemble des elements de la fenetre graphique.
+	 */
 	private void construirePanneau() {
 		panneau = new JPanel();
 		panneau.setBounds(0, 0, fenetre.getWidth(), fenetre.getHeight());
@@ -85,10 +97,16 @@ public class Vue implements Observer{
 		fenetre.add(panneau);
 	}
 	
+	/**
+	 * Construit l'ensemble des boutons de la fenetre graphique.
+	 */
 	private void construireBoutons() {
 		construireBoutonDistribuer();
 	}
 	
+	/**
+	 * Construit le bouton associe a la distribution des cartes.
+	 */
 	private void construireBoutonDistribuer() {
 		boutonDistribuer = new JButton("Distribuer");
 		boutonDistribuer.setLocation(10, 10);
@@ -111,10 +129,16 @@ public class Vue implements Observer{
 		panneau.add(boutonDistribuer, BorderLayout.WEST);
 	}
 	
+	/**
+	 * Construit les textes fixes de la fenetre graphique.
+	 */
 	private void construireLabels() {
 		construireLabelMain();
 	}
 	
+	/**
+	 * Construit le texte correspondant au label "Main du joueur".
+	 */
 	private void construireLabelMain() {
 		labelMain = new JLabel();
 		labelMain.setLocation(100, 50);
@@ -127,6 +151,9 @@ public class Vue implements Observer{
 
 	@Override
 	public void update(Observable o, Object arg) {
+		cartesAffichees.clear();
+		for(Carte c : modele.getMainJoueur1())
+			cartesAffichees.add(new CarteGraphique(c));
 		
 		panneau.repaint();
 		fenetre.repaint();

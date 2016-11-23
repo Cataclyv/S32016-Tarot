@@ -29,11 +29,4 @@ public class CarteGraphique extends JButton{
 	public Carte getCarte() {
 		return carte;
 	}
-	
-	/**
-	 * Retourne la carte, la rendant visible. AU lieu d'afficher un dos de carte, le bouton affichera une carte revelee.
-	 */
-	public void retourner() {
-		retourne = true;
-	}
 }
