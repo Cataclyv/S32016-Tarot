@@ -3,7 +3,10 @@ package jeu;
 import javax.swing.*;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -17,6 +20,12 @@ import java.util.Observer;
  * 
  */
 public class Vue implements Observer{
+	/**
+	 * Taille de la fenetre graphique a afficher.
+	 */
+	private final Dimension TAILLE_FENETRE = new Dimension(800,600);
+	
+	private final Point POSITION_FENETRE = new Point(600,200);
 	/**
 	 * Dimension des boutons de la fenetre.
 	 */
@@ -39,9 +48,13 @@ public class Vue implements Observer{
 	 */
 	private JPanel panneau;
 	/**
-	 * Bouton controlant la distribution des cartes.
+	 * Bouton controlant la distribution des cartes. Se desactive automatiquement a la fin de la distribution.
 	 */
 	private JButton boutonDistribuer;
+	/**
+	 * Texte affichant "Main du joueur" dans la Vue.
+	 */
+	private JLabel labelMain;
 	
 	public Vue() {
 		modele = new Modele();
@@ -49,18 +62,26 @@ public class Vue implements Observer{
 		
 		construireFenetre();
 		construirePanneau();
+		
 		construireBoutons();
+		construireLabels();
 	}
 	
 	private void construireFenetre() {
 		fenetre = new JFrame();
-		fenetre.setSize(800, 600);
+		fenetre.setSize(TAILLE_FENETRE);
+		fenetre.setLocation(POSITION_FENETRE);
 		fenetre.setTitle("Tarot S3 (Jules Despret, Pablo Gutierrez)");
+		fenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		fenetre.setVisible(true);
 	}
 	
 	private void construirePanneau() {
 		panneau = new JPanel();
+		panneau.setBounds(0, 0, fenetre.getWidth(), fenetre.getHeight());
+		panneau.setBackground(Color.GREEN);
+		panneau.setVisible(true);
+		
 		fenetre.add(panneau);
 	}
 	
@@ -69,10 +90,10 @@ public class Vue implements Observer{
 	}
 	
 	private void construireBoutonDistribuer() {
-		boutonDistribuer = new JButton();
+		boutonDistribuer = new JButton("Distribuer");
 		boutonDistribuer.setLocation(10, 10);
+		boutonDistribuer.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		boutonDistribuer.setSize(TAILLE_BOUTON);
-		boutonDistribuer.setText("Distribuer");
 		boutonDistribuer.setVisible(true);
 		boutonDistribuer.setEnabled(true);
 		
@@ -87,13 +108,28 @@ public class Vue implements Observer{
 			}
 		});
 		
-		panneau.add(boutonDistribuer);
+		panneau.add(boutonDistribuer, BorderLayout.WEST);
+	}
+	
+	private void construireLabels() {
+		construireLabelMain();
+	}
+	
+	private void construireLabelMain() {
+		labelMain = new JLabel();
+		labelMain.setLocation(100, 50);
+		labelMain.setText("Main du joueur :");
+		labelMain.setVisible(true);
+		labelMain.setEnabled(true);
+		
+		panneau.add(labelMain, BorderLayout.WEST);
 	}
 
 	@Override
 	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
 		
+		panneau.repaint();
+		fenetre.repaint();
 	}
 
 }
