@@ -1,5 +1,5 @@
 package jeu;
 
 public enum CouleurCarte {
-	pique, coeur, atout, carreau, trefle, excuse
+	Pique, Coeur, Atout, Carreau, Trefle, Excuse
 }

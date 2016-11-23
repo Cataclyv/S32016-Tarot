@@ -31,17 +31,26 @@ public final class Carte extends JButton {
 	 * @param valeur
 	 * @param chemin
 	 */
-	public Carte(CouleurCarte couleur, int valeur, String chemin) {
+	public Carte(CouleurCarte couleur, int valeur) {
 		this.couleur = couleur;
 		this.valeur = valeur;
-		this.chemin = chemin;
+
 		retourne = false;
+		
+		chemin = "img/";
+		if(couleur != CouleurCarte.Excuse && couleur != CouleurCarte.Atout)
+			chemin += valeur + couleur.toString() + ".jpg";
+		else if(couleur != CouleurCarte.Excuse && couleur == CouleurCarte.Atout)
+			chemin += valeur + ".jpg";
+		else if(couleur == CouleurCarte.Excuse && couleur != CouleurCarte.Atout)
+			chemin += "excuse.jpg";
 	}
 	
 	/**
-	 * Retourne la carte ; la Vue n'affichera pas une face cachee mais la vraie face de la carte.
+	 * Retourne le chemin necessaire pour acceder au fichier contenant l'image
+	 * @return
 	 */
-	public void retourner() {
-		retourne = true;
+	public String getChemin() {
+		return chemin;
 	}
 }

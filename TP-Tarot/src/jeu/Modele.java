@@ -78,12 +78,12 @@ public class Modele extends Observable{
 		cartes.clear();
 
 		try {
-			construireCouleur(CouleurCarte.pique, 14);
-			construireCouleur(CouleurCarte.coeur, 14);
-			construireCouleur(CouleurCarte.carreau, 14);
-			construireCouleur(CouleurCarte.trefle, 14);
-			construireCouleur(CouleurCarte.atout, 21);
-			construireCouleur(CouleurCarte.excuse, 1);
+			construireCouleur(CouleurCarte.Pique, 14);
+			construireCouleur(CouleurCarte.Coeur, 14);
+			construireCouleur(CouleurCarte.Carreau, 14);
+			construireCouleur(CouleurCarte.Trefle, 14);
+			construireCouleur(CouleurCarte.Atout, 21);
+			construireCouleur(CouleurCarte.Excuse, 1);
 		}
 		catch(TarotException e) {
 			e.message();
@@ -103,7 +103,7 @@ public class Modele extends Observable{
 		int tailleInitiale = cartes.size();
 
 		for(int valeur=1 ; valeur<=nbCartes ; valeur++) {
-			cartes.add(new Carte(couleur, valeur, couleur.toString()+valeur));
+			cartes.add(new Carte(couleur, valeur));
 			nbCartesAjoutees++;
 		}
 

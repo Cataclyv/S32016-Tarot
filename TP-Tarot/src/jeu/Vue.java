@@ -71,6 +71,8 @@ public class Vue implements Observer{
 		
 		construireBoutons();
 		construireLabels();
+		
+		fenetre.repaint();
 	}
 	
 	/**
@@ -102,6 +104,7 @@ public class Vue implements Observer{
 	 */
 	private void construireBoutons() {
 		construireBoutonDistribuer();
+		construireBoutonsCartes();
 	}
 	
 	/**
@@ -130,6 +133,19 @@ public class Vue implements Observer{
 	}
 	
 	/**
+	 * Construit l'ensemble des boutons correspondant aux cartes ; les boutons commencent masques.
+	 */
+	private void construireBoutonsCartes() {
+		cartesAffichees = new ArrayList<CarteGraphique>();
+		for(int i=1 ; i <= 18 ; i++) {
+			cartesAffichees.add(new CarteGraphique(new Point(i*10+100, 150)));
+		}
+		for(CarteGraphique cg : cartesAffichees) {
+			panneau.add(cg);
+		}
+	}
+	
+	/**
 	 * Construit les textes fixes de la fenetre graphique.
 	 */
 	private void construireLabels() {
@@ -151,13 +167,8 @@ public class Vue implements Observer{
 
 	@Override
 	public void update(Observable o, Object arg) {
-		cartesAffichees.clear();
-		for(Carte c : modele.getMainJoueur1())
-			cartesAffichees.add(new CarteGraphique(c));
-		
-		panneau.repaint();
+
 		fenetre.repaint();
 	}
-
 }
 

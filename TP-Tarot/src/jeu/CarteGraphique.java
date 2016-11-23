@@ -1,5 +1,12 @@
 package jeu;
 
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.Point;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 /**
@@ -7,19 +14,32 @@ import javax.swing.JButton;
  * @author jdespret
  *
  */
-public class CarteGraphique extends JButton{
+public class CarteGraphique extends JButton {
 	/**
 	 * Carte associe au bouton.
 	 */
 	private Carte carte;
 	/**
-	 * Definit si la carte est face cachee ou retournee.
+	 * Taille d'une carte graphique.
 	 */
-	private boolean retourne;
+	private final Dimension TAILLE_CARTE = new Dimension(100,140);
 	
-	public CarteGraphique(Carte carte) {
+	public CarteGraphique(Point position) {
+		setSize(TAILLE_CARTE);
+		this.setLocation(position);
+		
+		setVisible(true);
+		setEnabled(false);
+		setCursor(new Cursor(Cursor.HAND_CURSOR));
+		setIcon(new ImageIcon("img/cache.jpg"));
+	}
+	
+	/**
+	 * Assigne une carte logique a cette carte graphique.
+	 * @param carte
+	 */
+	public void setCarte(Carte carte) {
 		this.carte = carte;
-		retourne = false;
 	}
 	
 	/**
@@ -28,5 +48,12 @@ public class CarteGraphique extends JButton{
 	 */
 	public Carte getCarte() {
 		return carte;
+	}
+	
+	/**
+	 * Revele la carte auparavant retournee, en remplacant son image de dos par son image de face.
+	 */
+	public void retourner() {
+		setIcon(new ImageIcon(carte.getChemin()));
 	}
 }
